@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://n06eggbyg7u6"]
+
+[ext_resource type="Script" path="res://characters/essence/Slimes/mini_slime/slime.gd" id="1_2lj1w"]
+[ext_resource type="Texture2D" uid="uid://bp1jcsmkhqyjg" path="res://resourses/textures/UI/healthbar/standard/horizontal/no-heart-standard-empty-3.png" id="1_iu3ob"]
+[ext_resource type="Texture2D" uid="uid://bkbxoitekoafy" path="res://resourses/textures/UI/healthbar/standard/horizontal/standard-1.png" id="2_6pks2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ujhfe"]
+radius = 146.342
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8vfjh"]
+radius = 23.0217
+
+[node name="Slime" type="CharacterBody2D"]
+collision_layer = 32
+collision_mask = 3
+script = ExtResource("1_2lj1w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+offset_left = -33.0
+offset_top = -27.0
+offset_right = 95.0
+offset_bottom = 48.0
+scale = Vector2(0.496724, 0.498298)
+value = 70.0
+texture_under = ExtResource("1_iu3ob")
+texture_progress = ExtResource("2_6pks2")
+
+[node name="chaseArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="chaseArea"]
+shape = SubResource("CircleShape2D_ujhfe")
+
+[node name="attackArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 272
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="attackArea"]
+shape = SubResource("CircleShape2D_8vfjh")
+debug_color = Color(0.979381, 0.103571, 0.252695, 0.42)
+
+[connection signal="body_entered" from="chaseArea" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="attackArea" to="." method="_on_attack_area_body_entered"]
+[connection signal="body_exited" from="attackArea" to="." method="_on_attack_area_body_exited"]

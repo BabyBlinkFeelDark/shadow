@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=3 uid="uid://bov7jbqi57h3j"]
+
+[ext_resource type="Script" path="res://characters/essence/training_maneken/fsm/training_maneken.gd" id="1_766y6"]
+[ext_resource type="Script" path="res://characters/essence/training_maneken/fsm/front.gd" id="3_hhnta"]
+[ext_resource type="Script" path="res://characters/essence/training_maneken/fsm/back.gd" id="4_d8tcm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gmmv4"]
+size = Vector2(17, 23)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_utbhf"]
+a = Vector2(0, -11)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_fb00a"]
+a = Vector2(0, -11)
+b = Vector2(0, 8)
+
+[node name="training_maneken" type="CharacterBody2D"]
+collision_layer = 32
+collision_mask = 3
+script = ExtResource("1_766y6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_gmmv4")
+
+[node name="HitBoxes" type="Node2D" parent="."]
+
+[node name="Front" type="Area2D" parent="HitBoxes"]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+script = ExtResource("3_hhnta")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxes/Front"]
+position = Vector2(-7, 0)
+shape = SubResource("SegmentShape2D_utbhf")
+debug_color = Color(0.906614, 0.000124562, 0.742762, 0.42)
+
+[node name="Back" type="Area2D" parent="HitBoxes"]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_d8tcm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxes/Back"]
+position = Vector2(8, 0)
+shape = SubResource("SegmentShape2D_fb00a")
+debug_color = Color(0.746696, 0.461996, 0, 0.42)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+offset_left = -17.0
+offset_top = -69.0
+offset_right = 23.0
+offset_bottom = -10.0
+
+[node name="Damage_l" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Side"
+
+[node name="value_l" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Power"
+
+[node name="heal_l" type="Label" parent="VBox"]
+layout_mode = 2
+text = "heal"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="fsm" type="Node" parent="."]
+
+[node name="Idle" type="Node" parent="fsm"]
+
+[node name="Air" type="Node" parent="fsm"]
+
+[node name="ChaseArea" type="Node2D" parent="."]
+
+[node name="playerBack" type="Area2D" parent="ChaseArea"]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ChaseArea/playerBack"]
+polygon = PackedVector2Array(13, -12, 39, -35, 38, 12, 12, 12)
+
+[node name="playerFront" type="Area2D" parent="ChaseArea"]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ChaseArea/playerFront"]
+polygon = PackedVector2Array(-13, 12, -140, 12, -154, -15, -155, -57, -139, -84, -111, -103, -2, -20, -8, -12)
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="ChaseArea/playerBack" to="." method="_on_player_back_body_entered"]
+[connection signal="body_exited" from="ChaseArea/playerBack" to="." method="_on_player_back_body_exited"]
+[connection signal="body_entered" from="ChaseArea/playerFront" to="." method="_on_player_front_body_entered"]
+[connection signal="body_exited" from="ChaseArea/playerFront" to="." method="_on_player_front_body_exited"]
